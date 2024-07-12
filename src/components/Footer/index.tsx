@@ -1,9 +1,10 @@
 import { VisaIcon, MasterCardIcon, PiastrixIcon, EthereumIcon, BitcoinLogo } from "@/icons/svgIcons";
+import Link from "next/link";
 import * as React from "react";
 
 function Footer(): JSX.Element {
   return (
-    <footer className="bg-[#12081e] text-white mx-auto shadow pl-8 pr-8 dark:bg-gray-900">
+    <footer className="bg-[#12081e] text-white shadow pl-8 pr-8 dark:bg-gray-900">
       <div className="w-full  p-4 md:py-8">
         <div className="flex flex-col sm:flex items-center sm:justify-between pb-[30px]">
           <p className="text-1xl font-semibold whitespace-nowrap dark:text-white pb-[15px]">
@@ -39,25 +40,25 @@ function Footer(): JSX.Element {
           </a>
           <ul className="flex flex-wrap items-center mb-6 text-sm font-medium text-gray-500 sm:mb-0 dark:text-gray-400">
             <li>
-              <a href="#" className="hover:underline me-4 md:me-6">
+              <Link href="/privacy" className="hover:underline me-4 md:me-6">
                 Политика конфиденциальности
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#" className="hover:underline me-4 md:me-6">
+              <Link href="/gambling" className="hover:underline me-4 md:me-6">
                 Политика ответственной игры
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#" className="hover:underline me-4 md:me-6">
+              <Link href="/rules" className="hover:underline me-4 md:me-6">
                 Правила и условия
-              </a>
+              </Link>
             </li>
 
             <li>
-              <a href="#" className="hover:underline">
+              <Link href="/contacts" className="hover:underline">
                 Контакты
-              </a>
+              </Link>
             </li>
           </ul>
         </div>
