@@ -1,6 +1,7 @@
+import signIn from "@/firebase/auth/signIn";
+import signInWithGoogle from "@/firebase/auth/signInWithGoogle";
 import { GoogleIcon } from "@/icons/svgIcons";
-import { Modal, Checkbox, Label } from "flowbite-react";
-import Link from "next/link";
+import { Modal } from "flowbite-react";
 import * as React from "react";
 import { useState } from "react";
 
@@ -11,6 +12,38 @@ interface LoginModalProps {
 }
 
 function LoginModal({ openModal, setOpenModal, openRegisterModal }: LoginModalProps): JSX.Element {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSubmit = async (event: { preventDefault: () => void }) => {
+    event.preventDefault();
+
+    // Attempt to sign in with provided email and password
+    const { result, error } = await signIn(email, password);
+    setOpenModal(false);
+
+    if (error) {
+      // Display and log any sign-in errors
+      console.log(error);
+      return;
+    }
+  };
+
+  const handleSignInWithGoogle = async (event: {
+    preventDefault: () => void;
+  }) => {
+    event.preventDefault();
+
+    // Attempt to sign up with provided Google
+    const { result, error } = await signInWithGoogle();
+    setOpenModal(false);
+
+    if (error) {
+      // Display and log any sign-up errors
+      console.log(error);
+      return;
+    }
+  };
 
   function onCloseModal() {
     setOpenModal(false);
@@ -37,18 +70,20 @@ function LoginModal({ openModal, setOpenModal, openRegisterModal }: LoginModalPr
         <form className="max-w-sm mx-auto">
           <div className="mb-5">
             <input
-              type="text"
-              id="login"
-              className="bg-[#271248] text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo block w-full p-2.5"
-              placeholder="Введите логин"
+              onChange={e => setEmail(e.target.value)}
+              type="email"
+              id="email"
+              className="bg-[#271248] text-white text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo block w-full p-2.5"
+              placeholder="Введите почту"
               required
             />
           </div>
           <div className="mb-5">
             <input
+              onChange={e => setPassword(e.target.value)}
               type="password"
               id="password"
-              className="bg-[#271248] text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo block w-full p-2.5"
+              className="bg-[#271248] text-white text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo block w-full p-2.5"
               placeholder="Введите пароль"
               required
             />
@@ -63,6 +98,7 @@ function LoginModal({ openModal, setOpenModal, openRegisterModal }: LoginModalPr
           </div>
           <div className="flext flex-col items-center">
             <button
+              onClick={handleSubmit}
               type="submit"
               className="text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
             >
@@ -72,6 +108,7 @@ function LoginModal({ openModal, setOpenModal, openRegisterModal }: LoginModalPr
               или
             </p>
             <button
+              onClick={handleSignInWithGoogle}
               type="submit"
               className="text-white mb-5 border border-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
             >

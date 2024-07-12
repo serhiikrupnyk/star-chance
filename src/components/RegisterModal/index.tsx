@@ -1,6 +1,7 @@
+import signUpWithGoogle from "@/firebase/auth/signUpWithGoogle";
+import signUp from "@/firebase/auth/signup";
 import { GoogleIcon } from "@/icons/svgIcons";
 import { Modal, Checkbox, Label } from "flowbite-react";
-import Link from "next/link";
 import * as React from "react";
 import { useState } from "react";
 
@@ -15,6 +16,54 @@ function RegisterModal({
   setOpenModal,
   openLoginModal,
 }: RegisterModalProps): JSX.Element {
+  const [login, setLogin] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [birthDate, setBirthDate] = useState("" || Date);
+  const [password, setPassword] = useState("");
+  const [checked18, setChecked18] = useState(false);
+
+  const handleSubmit = async (event: { preventDefault: () => void }) => {
+    event.preventDefault();
+
+    // Attempt to sign up with provided email and password
+    const { result, error } = await signUp(
+      login,
+      firstName,
+      lastName,
+      email,
+      birthDate,
+      phoneNumber,
+      password
+    );
+    
+    setOpenModal(false);
+
+    if (error) {
+      // Display and log any sign-up errors
+      console.log(error);
+      return;
+    }
+  };
+
+  const handleSignUpWithGoogle = async (event: {
+    preventDefault: () => void;
+  }) => {
+    event.preventDefault();
+
+    // Attempt to sign up with provided Google
+    const { result, error } = await signUpWithGoogle();
+    setOpenModal(false);
+
+    if (error) {
+      // Display and log any sign-up errors
+      console.log(error);
+      return;
+    }
+  };
+
   function onCloseModal() {
     setOpenModal(false);
   }
@@ -40,37 +89,41 @@ function RegisterModal({
         <form className="max-w-sm mx-auto">
           <div className="mb-5">
             <input
+              onChange={e => setLogin(e.target.value)}
               type="text"
               id="login"
-              className="bg-[#271248] text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo block w-full p-2.5"
+              className="bg-[#271248] text-white text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo block w-full p-2.5"
               placeholder="Введите логин"
               required
             />
           </div>
           <div className="mb-5">
             <input
+              onChange={e => setEmail(e.target.value)}
               type="email"
               id="email"
-              className="bg-[#271248] text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo block w-full p-2.5"
+              className="bg-[#271248] text-white text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo block w-full p-2.5"
               placeholder="Введите почту"
               required
             />
           </div>
           <div className="mb-5">
             <input
+              onChange={e => setFirstName(e.target.value)}
               type="text"
               id="firstName"
-              className="bg-[#271248] text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo block w-full p-2.5"
+              className="bg-[#271248] text-white text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo block w-full p-2.5"
               placeholder="Введите имя"
               required
             />
           </div>
           <div className="mb-5">
             <input
+              onChange={e => setLastName(e.target.value)}
               type="text"
               id="lastName"
-              className="bg-[#271248] text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo block w-full p-2.5"
-              placeholder="Введите фимилию"
+              className="bg-[#271248] text-white text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo block w-full p-2.5"
+              placeholder="Введите фамилию"
               required
             />
           </div>
@@ -82,6 +135,7 @@ function RegisterModal({
               Введите дату рождения
             </label>
             <input
+              onChange={e => setBirthDate(e.target.value)}
               type="date"
               id="date"
               className="bg-[#271248] text-white text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo block w-full p-2.5"
@@ -91,25 +145,27 @@ function RegisterModal({
           </div>
           <div className="mb-5">
             <input
+              onChange={e => setPhoneNumber(e.target.value)}
               type="text"
               id="phone"
-              className="bg-[#271248] text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo block w-full p-2.5"
+              className="bg-[#271248] text-white text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo block w-full p-2.5"
               placeholder="Введите номер телефона"
               required
             />
           </div>
           <div className="mb-5">
             <input
+              onChange={e => setPassword(e.target.value)}
               type="password"
               id="password"
-              className="bg-[#271248] text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo block w-full p-2.5"
+              className="bg-[#271248] text-white text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo block w-full p-2.5"
               placeholder="Введите пароль"
               required
             />
           </div>
           <div className="flex justify-between mb-[20px]">
             <div className="flex items-center gap-2">
-              <Checkbox id="remember" />
+              <Checkbox id="remember" onChange={e => setChecked18(e.target.checked)} />
               <Label htmlFor="remember" className="text-white">
                 Мне есть 18 лет
               </Label>
@@ -117,8 +173,10 @@ function RegisterModal({
           </div>
           <div className="flext flex-col items-center">
             <button
+              onClick={handleSubmit}
+              disabled={!checked18}
               type="submit"
-              className="text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+              className="disabled:cursor-not-allowed text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
             >
               Зарегистрироваться
             </button>
@@ -126,6 +184,7 @@ function RegisterModal({
               или
             </p>
             <button
+              onClick={handleSignUpWithGoogle}
               type="submit"
               className="text-white mb-5 border border-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
             >
