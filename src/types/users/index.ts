@@ -6,5 +6,5 @@ export interface UserData {
   email: string;
   phoneNumber: string;
   birthDate: string | Date;
-  balance: number;
+  balance: string;
 }
